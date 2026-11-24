@@ -14,14 +14,38 @@ app.get("/math/circle/:r", (req, res) => {
   }
 
   const result = {
-    area: area.toPrecision(2),
-    circumference: circumference.toPrecision(2),
+    area: Number(area.toFixed(2)),
+    circumference: Number(circumference.toFixed(2)),
   };
 
   res.json(result);
 });
 
-//TODO2
+app.get("/math/rectangle/:width/:height", (req, res) => {
+  const width = Number(req.params.width);
+  const height = Number(req.params.height);
+
+  if (
+    !Number.isFinite(width) ||
+    !Number.isFinite(height) ||
+    width < 0 ||
+    height < 0
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Szerokość i wysokość muszą być liczbami nieujemnymi" });
+  }
+
+  const area = width * height;
+  const perimeter = 2 * (width + height);
+
+  const result = {
+    area: Number(area.toFixed(2)),
+    perimeter: Number(perimeter.toFixed(2)),
+  };
+
+  res.json(result);
+});
 
 //TODO3
 
