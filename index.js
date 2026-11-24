@@ -47,7 +47,27 @@ app.get("/math/rectangle/:width/:height", (req, res) => {
   res.json(result);
 });
 
-//TODO3
+app.get("/math/power/:base/:exponent", (req, res) => {
+  const base = Number(req.params.base);
+  const exponent = Number(req.params.exponent);
+  const root = req.query.root === "true";
+
+  if (!Number.isFinite(base) || !Number.isFinite(exponent)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  const result = Math.pow(base, exponent);
+
+  if (root) {
+    const root = Math.sqrt(base);
+    return res.json({
+      result: Number(result.toFixed(2)),
+      root: Number(root.toFixed(2)),
+    });
+  }
+
+  res.json({ result: Number(result.toFixed(2)) });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
