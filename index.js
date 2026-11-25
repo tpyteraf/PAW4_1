@@ -1,5 +1,6 @@
 "use strict";
 
+const { mean, geometricMean, harmonicMean } = require("simple-statistics");
 const express = require("express");
 const app = express();
 
@@ -114,6 +115,24 @@ app.get("/math/gcdlcm/:a/:b", (req, res) => {
   lcm = Math.abs(lcm) / gcd;
 
   res.json({ gcd, lcm });
+});
+
+app.get("/math/average", (req, res) => {
+  const numbers = req.query.nums.split(",").map(Number);
+
+  if (
+    numbers.some((n) => !Number.isFinite(n)) ||
+    numbers.length === 0 ||
+    numbers.some((n) => n <= 0)
+  ) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  res.json({
+    arithmeticMean: mean(numbers),
+    geometricMean: geometricMean(numbers),
+    harmonicMean: harmonicMean(numbers),
+  });
 });
 
 const PORT = process.env.PORT || 3000;
