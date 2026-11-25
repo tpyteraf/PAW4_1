@@ -72,7 +72,7 @@ app.get("/math/power/:base/:exponent", (req, res) => {
 app.get("/math/isprime/:n", (req, res) => {
   const n = Number(req.params.n);
 
-  if (!Number.isFinite(n) || n < 2) {
+  if (!Number.isSafeInteger(n) || n < 2) {
     return res.status(400).json({ error: "Invalid input" });
   }
 
@@ -85,6 +85,35 @@ app.get("/math/isprime/:n", (req, res) => {
   }
 
   res.json({ number: n, isPrime });
+});
+
+app.get("/math/gcdlcm/:a/:b", (req, res) => {
+  let a = Math.abs(Number(req.params.a));
+  let b = Math.abs(Number(req.params.b));
+
+  if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  if (a === 0 && b === 0) {
+    return res.json({ gcd: 0, lcm: 0 });
+  }
+
+  if (a === 0 || b === 0) {
+    return res.json({ gcd: Math.max(a, b), lcm: 0 });
+  }
+
+  let gcd = a;
+  let lcm = a * b;
+  while (b !== 0) {
+    gcd = b;
+    b = a % b;
+    a = gcd;
+  }
+
+  lcm = Math.abs(lcm) / gcd;
+
+  res.json({ gcd, lcm });
 });
 
 const PORT = process.env.PORT || 3000;
