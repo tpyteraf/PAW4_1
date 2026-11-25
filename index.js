@@ -69,6 +69,24 @@ app.get("/math/power/:base/:exponent", (req, res) => {
   res.json({ result: Number(result.toFixed(2)) });
 });
 
+app.get("/math/isprime/:n", (req, res) => {
+  const n = Number(req.params.n);
+
+  if (!Number.isFinite(n) || n < 2) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  let isPrime = true;
+  for (let i = 2; i <= Math.sqrt(n); i++) {
+    if (n % i === 0) {
+      isPrime = false;
+      break;
+    }
+  }
+
+  res.json({ number: n, isPrime });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
